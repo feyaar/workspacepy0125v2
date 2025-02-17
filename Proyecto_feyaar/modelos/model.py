@@ -59,14 +59,14 @@ class Productos:
         cursor.execute(query)
         con.commit()
 #agregar un clase catalogo
-class Regiones:
-    """ Tabla REGIONES: id, nombre, pais """
+class Region:
+    """ Tabla REGION: id, nombre, pais """
     def create_table(self, con: Connection):
         query = """
-            CREATE TABLE IF NOT EXISTS REGIONES (
+            CREATE TABLE IF NOT EXISTS REGION (
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 nombre VARCHAR(50) NOT NULL,
-                pais_id INTEGER NOT NULL,
+                region_id INTEGER NOT NULL,
                 FOREIGN KEY(pais_id) REFERENCES PAIS(id)
             );
         """
