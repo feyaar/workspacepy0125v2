@@ -18,6 +18,9 @@ def IngestDataProducts(app:App):
     dataProducts=GetDataSourceProductos(conn)
     createTableProducts(conn)
     InsertManyProducts(bd,dataProducts)
+    dataRegion=GetDataSourceRegion(conn)
+    createTableRegion(conn)
+    InsertManyRegion(bd,dataRegion)
     dataVentas=GetDatasourceOrders(conn)
     createTableVentas(conn)
     insertManyVentas(bd,dataVentas)
@@ -42,7 +45,7 @@ def InsertDataPais(bd:Database,data):
 
 
 def GetDatoSourcePostalCode():
-    pathData="/workspaces/workspacepy0125v2/proyecto/files/datafuente.xls"
+    pathData="/workspaces/workspacepy0125v2/Proyecto_feyaar/files/datafuente.xls"
     df=pd.read_excel(pathData,sheet_name="Orders")
     df['Postal Code'] = df['Postal Code'].astype(str)
     df_postalCode=df[['Postal Code','Country','State']]
@@ -61,7 +64,7 @@ def InsertDataPostalCode(bd:Database,data):
     bd.insert_many('POSTALCODE',['code','pais','state'],data)
 
 def GetDataSourceCategories():
-    pathData="/workspaces/workspacepy0125v2/proyecto/files/datafuente.xls"
+    pathData="/workspaces/workspacepy0125v2/Proyecto_feyaar/files/datafuente.xls"
     df=pd.read_excel(pathData,sheet_name="Orders")
     df_categories=df[['Category','Sub-Category']].dropna().drop_duplicates()
     categories_tuples=[tuple(x) for x in df_categories.to_records(index=False)]
@@ -76,7 +79,7 @@ def InsertManyCategories(bd:Database,data):
 
 
 def GetDataSourceProductos(conn):
-    pathData="/workspaces/workspacepy0125v2/proyecto/files/datafuente.xls"
+    pathData="/workspaces/workspacepy0125v2/Proyecto_feyaar/files/datafuente.xls"
     df=pd.read_excel(pathData,sheet_name="Orders")
     df_products=df[['Product ID','Product Name','Category']].dropna().drop_duplicates()
     df_categoria=pd.read_sql_query("SELECT id,name FROM CATEGORIAS",conn)
@@ -94,9 +97,25 @@ def createTableProducts(conn:Connection):
 def InsertManyProducts(bd:Database,data):
     bd.insert_many('PRODUCTOS',['product_id','name','category_id'],data)
 
+def GetDataSourceRegion():
+    pathData="C:\Users\DELL\Downloads\Proyecto_feyaar\files\datafuente.xls"
+    df=pd.read_excel(pathData,sheet_name="Orders")
+    print(df.shape)
+    print(df.keys())
+    df_country=df['Region'].unique()
+    print(df_region.shape)
+    country_tuples = [(region,) for region in df_region] # hacer una lista de tuplas simplificado
+    return region_tuples
+
+def CreateTablesRegion(conn:Connection):
+    region=Region()
+    region.create_table(conn)
+    
+def InsertDataPais(bd:Database,data):
+    bd.insert_many('REGION',['name'],data)
 
 def GetDatasourceOrders(conn):
-    pathData="/workspaces/workspacepy0125v2/proyecto/files/datafuente.xls"
+    pathData="/workspaces/workspacepy0125v2/Proyecto_feyaar/files/datafuente.xls"
     df=pd.read_excel(pathData,sheet_name="Orders")
     df_products=pd.read_sql_query("SELECT id,name,product_id FROM PRODUCTOS",conn)
     df_orders=df[['Order ID','Postal Code','Product ID','Sales','Quantity','Discount','Profit','Shipping Cost','Order Priority']].dropna().drop_duplicates()
